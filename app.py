@@ -44,6 +44,7 @@ def makeNewVals(length):
     sortedVals = sorted(vals)
     end = length - 1
     comps = 0
+    compsDisplay.config(text=comps)
     drawNums()
     # print(vals)
 
@@ -53,8 +54,8 @@ def drawNums():
     x, y, = 10, 500
     
     for i in range(end + 1):
-        y -= (vals[i]*4)
-        # y -= vals[i]
+        # y -= (vals[i]*2)
+        y -= vals[i]
         tmp = Bar(vals[i], 550-y, (numBars // 1000) + 1)
         tmp.drawBar(can, Point(x, y))
         # playSound()
@@ -63,10 +64,6 @@ def drawNums():
 
     root.update_idletasks()
 
-# initialize number of bars and array
-numBars = 100
-makeNewVals(numBars)
-
 def swapVals(arr, i, j):
     tmp = vals[j]
     arr[j] = arr[i]
@@ -74,10 +71,7 @@ def swapVals(arr, i, j):
 
 # reverses array
 def reverse(i, j):
-    if i >= j:
-        print("Reverse Done")
-        return 
-    else:
+    if i < j:
         swapVals(vals, i, j)
         drawNums()
         i += 1
@@ -87,6 +81,7 @@ def reverse(i, j):
 # recursively bubble sort array; stop used to not iterated over previously sorted array. 
 def bubbleSort(arr):
     global comps
+    comps = 0                                                                       # comparisons
     stop = len(arr)
     for i in range(stop-1):
         for j in range(stop-i-1):
@@ -94,14 +89,15 @@ def bubbleSort(arr):
             if arr[j] > arr[j+1]:
                 drawNums()
                 swapVals(vals, j, j+1)
-    print("bubbleSort complete")
-    print("Comparisons: ", comps)
+    # print("bubbleSort complete")
+    compsDisplay.config(text=comps)
     drawNums()
 
 
 # recursively select the largest element of the remaining unsorted array and move it to the correct position
 def selectionSort(stop):
     global comps
+    comps = 0
     for i in range(stop):
         for j in range(i+1, stop+1):
             comps += 1                                                              # comparisons
@@ -109,38 +105,89 @@ def selectionSort(stop):
                 swapVals(vals, i, j)
                 drawNums()
     drawNums()
-    print("selectionSort complete")
-    print("Comparisons: ", comps)
+    # print("selectionSort complete")
+    # print("Comparisons: ", comps)
+    compsDisplay.config(text=comps)
 
-#TODO: figure out what this algorithm is
-def unknownSort(stop):
-    global comps
-    curMax = -999
-    swapIndex = -1
-    for i in range(stop+1):
-        comps += 1                                                              # comparisons
-        if vals[i] > curMax:
-            curMax = vals[i]
-            swapIndex = i
-            # swapVals(vals, i, stop)
-            # drawNums()
-    swapVals(vals, swapIndex, stop)
+# recursive selection sort
+# def unknownSort(stop):
+#     global comps
+#     comps = 0
+#     curMax = -999
+#     swapIndex = -1
+#     for i in range(stop+1):
+#         comps += 1                                                              # comparisons
+#         if vals[i] > curMax:
+#             curMax = vals[i]
+#             swapIndex = i
+#             # swapVals(vals, i, stop)
+#             # drawNums()
+#     swapVals(vals, swapIndex, stop)
+#     drawNums()
+#     if stop > 0:
+#         unknownSort(stop-1)
+#     else:
+#         print("unknownSort complete")
+#         print("Comparisons: ", comps)
+
+
+# radix and counting sort code from https://www.geeksforgeeks.org/radix-sort/
+def countingSort(arr, exp1):
+    n = len(arr)
+ 
+    # The output array elements that will have sorted arr
+    output = [0] * (n)
+ 
+    # initialize count array as 0
+    count = [0] * (10)
+ 
+    # Store count of occurrences in count[]
+    for i in range(0, n):
+        index = arr[i] // exp1
+        count[index % 10] += 1
+ 
+    # Change count[i] so that count[i] now contains actual
+    # position of this digit in output array
+    for i in range(1, 10):
+        drawNums()
+        count[i] += count[i - 1]
+ 
+    # Build the output array
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp1
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+ 
+    # Copying the output array to arr[],
+    # so that arr now contains sorted numbers
+    i = 0
+    for i in range(0, len(arr)):
+        arr[i] = output[i]
+
+
+def radixSort(arr):
+    # Find the maximum number to know number of digits
+    max1 = max(arr)
+ 
+    # Do counting sort for every digit. Note that instead
+    # of passing digit number, exp is passed. exp is 10^i
+    # where i is current digit number
+    exp = 1
+    while max1 / exp >= 1:
+        countingSort(arr, exp)
+        exp *= 10
     drawNums()
-    if stop > 0:
-        # print("Next Pass", stop, curMax)
-        # can.after(100, lambda:(uknownSort(stop-1)))
-        unknownSort(stop-1)
-    else:
-        print("unknownSort complete")
-        print("Comparisons: ", comps)
 
+# merge sorted sections from merge sort
 def merge(arr, begin, mid, end):
     global comps
     x, y = begin, mid + 1
     tmp = []
 
     for i in range(begin, end+1):
-        comps += 1                                                              # comparisons
+        
         if x > mid:
             tmp.append(arr[y])
             y += 1
@@ -148,9 +195,11 @@ def merge(arr, begin, mid, end):
             tmp.append(arr[x])
             x += 1
         elif arr[x] < arr[y]:
+            comps += 1                                                              # comparisons
             tmp.append(arr[x])
             x += 1
         else:
+            comps += 1                                                              # comparisons
             tmp.append(arr[y])
             y += 1
     
@@ -159,9 +208,7 @@ def merge(arr, begin, mid, end):
         begin += 1
 
 def mergeSort(arr, begin, end):
-    global comps
     if begin < end:
-        # comps += 1                                                              # comparisons
         mid = (begin + end) // 2
         mergeSort(arr, begin, mid)
         mergeSort(arr, mid + 1, end)
@@ -173,10 +220,12 @@ def mergeSort(arr, begin, end):
 # wrapper function to print to console when mergeSort is finished
 def mergeSortWrap(arr, begin, end):
     global comps
+    comps = 0
     mergeSort(arr, begin, end)
     if arr == sortedVals:
-        print("mergeSort complete")
-        print("Comparisons: ", comps)
+        # print("mergeSort complete")
+        # print("Comparisons: ", comps)
+        compsDisplay.config(text=comps)
 
 def changesize():
     global numBars
@@ -184,12 +233,28 @@ def changesize():
     
 
 topnav = Menu(root)
-options = Menu(topnav)
+options = Menu(topnav, tearoff=0)
+topnav.add_cascade(label="options", menu=options)
 options.add_command(label="change array size", command=changesize)
+root.config(menu=topnav)
+
+# lowFrame = Frame(root, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20) #297373
+lowFrame = Frame(root, background="#297373", pady=5, padx=20)
+lowFrame.grid(row=2)
+
+compFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
+compFrame.grid(row=0, column=0)
+compsLabel = Label(compFrame, text="Comparisons: ", background="#be97c6")
+compsLabel.grid(row=0, column=0)
+compsDisplay = Label(compFrame, text="0", background="#be97c6")
+compsDisplay.grid(row=0, column=1)
+
+lowFrameSpace1 = Label(lowFrame, background="#297373", padx=10, text=" ")
+lowFrameSpace1.grid(row=0, column=1)
 
 # frame for buttons
-bFrame = Frame(root, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
-bFrame.grid(row=2)
+bFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
+bFrame.grid(row=0, column=2)
 
 # sorting buttons
 sortFrame = Frame(bFrame, pady=5, background="#000034")
@@ -200,19 +265,25 @@ selection = Button(sortFrame, bg="#be97c6", text="Selection", command=lambda: (s
 selection.grid(row=0, column=1, padx=5)
 mergeButton = Button(sortFrame, bg="#be97c6", text="Merge", command=lambda: (mergeSortWrap(vals, 0, len(vals)-1)))
 mergeButton.grid(row=0, column=2, padx=5)
-mystery = Button(sortFrame,bg="#be97c6", text="Mystery", command=lambda: (unknownSort(end)))
-mystery.grid(row=0, column=3, padx=5)
+radix = Button(sortFrame,bg="#be97c6", text="Radix", command=lambda: (radixSort(vals)))
+radix.grid(row=0, column=3, padx=5)
 
 # utility buttons
 midFrame = Frame(bFrame, pady=5, background="#000034")
 midFrame.grid(row=1)
 backwards = Button(midFrame, bg="#be97c6", text="reverse", command=lambda: (reverse(0, end)))
-backwards.grid(row=0, column=0, padx=5)
-p = Button(midFrame, bg="#be97c6", text="print", command=lambda: (print(vals)))
-p.grid(row=0, column=1, padx=5)
+backwards.grid(row=0, column=1, padx=5)
+# p = Button(midFrame, bg="#be97c6", text="print", command=lambda: (print(vals)))
+# p.grid(row=0, column=1, padx=5)
 genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(makeNewVals(numBars)))
-genNums.grid(row=0, column=2, padx=5)
+genNums.grid(row=0, column=0, padx=5)
+closeProgram = Button(midFrame, bg="#be97c6", fg="#f31227", text="Quit", command=root.destroy)
+closeProgram.grid(row=0,  column=2, padx=5)
 
+
+# initialize number of bars and array
+numBars = 200
+makeNewVals(numBars)
 
 if __name__ == "__main__":
     root.mainloop()
