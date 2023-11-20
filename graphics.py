@@ -13,7 +13,12 @@ class Bar:
         self.val = val
         self.height = h
         self.width = w
+        self.color = ""
 
     def drawBar(self, canvas, point):
         canvas.create_line(point.x, point.y, point.x, point.y+(self.height), fill=colors[int(self.val)%4], width=self.width)
         # canvas.create_rectangle(point.x, point.y, point.x+self.width, point.y+(self.height), fill=colors[self.val-1])
+
+    def setColor(self):
+        
+        self.color = ""
