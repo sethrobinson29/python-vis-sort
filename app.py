@@ -1,7 +1,5 @@
 from sorter import *
 from math import *
-import time
-import sys
 
 vals, sortedVals = [], []
 end =  numBars = comps = -1

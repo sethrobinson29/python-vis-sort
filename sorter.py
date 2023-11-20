@@ -1,5 +1,6 @@
 from graphics import *
 
+# swap function
 def swapVals(arr, i, j):
     tmp = arr[j]
     arr[j] = arr[i]
@@ -14,6 +15,7 @@ class Sorter():
         self.numBars = len(arr)
         self.comps = 0
 
+    # set up object for sorting
     def makeNewVals(self, length):
         self.numBars = length 
         self.vals = [i for i in range(length)]
@@ -22,6 +24,7 @@ class Sorter():
         self.canvascomps = 0
         self.drawNums()
 
+    # draw 
     def drawNums(self):
         self.canvas.delete('all')
         x, y, = 10, 500
