@@ -84,7 +84,7 @@ scaleFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e"
 scaleFrame.grid(row=0, column=4)
 
 # scale
-barScale = Scale(scaleFrame,from_=50, to=500, orient=HORIZONTAL, resolution=5, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, troughcolor="#be97c6", activebackground="#2e294e", font="Helvetica 10")
+barScale = Scale(scaleFrame,from_=100, to=500, orient=HORIZONTAL, resolution=5, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, troughcolor="#be97c6", activebackground="#2e294e", font="Helvetica 10")
 barScale.bind("<ButtonRelease-1>", scaleChange)
 barScale.grid(row=2, columnspan=2)
 
@@ -104,7 +104,6 @@ scaleFrameSpace1.grid(row=1, columnspan=2)
 
 # initialize number of bars and array
 can.makeNewVals(barScale.get())
-# can.makeNewVals(int(arraySize.get()))
 
 # wrapper for button handling
 def buttonClicked(buttonName):
@@ -117,6 +116,8 @@ def buttonClicked(buttonName):
         can.mergeSortWrap()
     elif buttonName == "quick":
         can.quickSortWrap()
+    elif buttonName == "radix":
+        can.radixSort()
     elif buttonName == "reverse":
         can.reverse()
     elif buttonName == "new":

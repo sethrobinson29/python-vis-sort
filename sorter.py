@@ -1,13 +1,17 @@
-# Class for animating sorting algorithms using the Bar objects defined in graphics.py
+# Class for animating sorting algorithms
 # By Seth Robinson https://github.com/sethrobinson29 
 # radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
-from graphics import *
+from tkinter import *
+from random import shuffle
 
 # swap function
 def swapVals(arr, i, j):
     tmp = arr[j]
     arr[j] = arr[i]
     arr[i] = tmp
+
+# colors for drawing values
+colors = [ "#A18DCE", "#AA8ED2", "#B38ED6", "#BD8FD9", "#C68FDD", "#CF90E1", "#D890E5", "#E291E8", "#EB91EC", "#F492F0" ]
 
 # class for array, canvas, and sorting 
 class Sorter():
@@ -19,28 +23,30 @@ class Sorter():
         self.numBars = len(arr)
         self.comps = 0
 
-    # set up object for sorting
+    # set up object for sorting, accepts int parameter 
     def makeNewVals(self, length):
         self.numBars = length 
         self.vals = [i for i in range(length)]
+        self.sortedVals = self.vals
         shuffle(self.vals)
-        self.sortedVals = sorted(self.vals)
         self.canvascomps = 0
         self.drawNums()
 
     # draw 
     def drawNums(self):
         self.canvas.delete('all')
-        x, y, = 10, 500
-        color = 0
+        x, y, = 10, 550
+        colorIndex = 0
 
         for i in range(self.numBars):
+            color = (self.vals[i] % 100) // 10 if self.vals[i] > 9 else 0
             y -= self.vals[i]
-            tmp = Bar(self.vals[i], 575-y, 1)
-            tmp.drawBar(self.canvas, Point(x, y))
+            self.canvas.create_line(x, y, x, 550, fill=colors[color], width=1)
+            # tmp = Bar(self.vals[i], 575-y, 1)
+            # tmp.drawBar(self.canvas, Point(x, y))
 
             x += (1000 / self.numBars)
-            y = 500
+            y = 550
         self.root.update_idletasks()
     
     # reverses array
