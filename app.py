@@ -53,19 +53,22 @@ selection = Button(sortFrame, bg="#be97c6", text="Selection", command=lambda:(bu
 selection.grid(row=0, column=1, padx=5)
 mergeButton = Button(sortFrame, bg="#be97c6", text="Merge", command=lambda:(buttonClicked("merge")) , font="Helvetica 12")
 mergeButton.grid(row=0, column=2, padx=5)
+quickButton = Button(sortFrame, bg="#be97c6", text="Quick", command=lambda:(buttonClicked("quick")) , font="Helvetica 12")
+quickButton.grid(row=0, column=3, padx=5)
 radix = Button(sortFrame,bg="#be97c6", text="Radix", command=lambda: (buttonClicked("radix")) , font="Helvetica 12")
-radix.grid(row=0, column=3, padx=5)
+radix.grid(row=0, column=4, padx=5)
 
 # utility buttons
 midFrame = Frame(bFrame, pady=5, background="#000034")
 midFrame.grid(row=1)
-backwards = Button(midFrame, bg="#be97c6", text="Reverse", command=can.reverse, font="Helvetica 12")
+backwards = Button(midFrame, bg="#be97c6", text="Reverse", command=lambda: (buttonClicked("reverse")), font="Helvetica 12")
 backwards.grid(row=0, column=1, padx=5)
 # p = Button(midFrame, bg="#be97c6", text="print", command=lambda: (print(vals)))
 # p.grid(row=0, column=1, padx=5)
-genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(can.makeNewVals(barScale.get())), font="Helvetica 12")
+genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(buttonClicked("new")), font="Helvetica 12")
+# genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(can.makeNewVals(int(arraySize.get()))), font="Helvetica 12")
 genNums.grid(row=0, column=0, padx=5)
-closeProgram = Button(midFrame, bg="#be97c6", fg="#f31227", text="Quit", command=root.destroy, font="Helvetica 12 bold")
+closeProgram = Button(midFrame, bg="#be97c6", fg="#f31227", text="Quit", command=lambda: (buttonClicked("quit")), font="Helvetica 12 bold")
 closeProgram.grid(row=0,  column=2, padx=5)
 
 # change length of array based on slider
@@ -74,6 +77,7 @@ def scaleChange(event):
         tmp = barScale.get()
         barScaleDisplay.config(text=tmp)
         can.makeNewVals(tmp)
+        compsDisplay.config(text=0)
 
 # scale frame
 scaleFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
@@ -83,6 +87,10 @@ scaleFrame.grid(row=0, column=4)
 barScale = Scale(scaleFrame,from_=50, to=500, orient=HORIZONTAL, resolution=5, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, troughcolor="#be97c6", activebackground="#2e294e", font="Helvetica 10")
 barScale.bind("<ButtonRelease-1>", scaleChange)
 barScale.grid(row=2, columnspan=2)
+
+# spinbox
+# arraySize = Spinbox(scaleFrame, from_=50, to=500, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, activebackground="#2e294e", font="Helvetica 10", command=scaleChange)
+# arraySize.grid(row=2, columnspan=2)
 
 # scale label and display 
 barLabelFrame = Frame(scaleFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20) 
@@ -96,8 +104,9 @@ scaleFrameSpace1.grid(row=1, columnspan=2)
 
 # initialize number of bars and array
 can.makeNewVals(barScale.get())
+# can.makeNewVals(int(arraySize.get()))
 
-# wrapper for sorting functions
+# wrapper for button handling
 def buttonClicked(buttonName):
     # sort 
     if buttonName == "bubble":
@@ -107,9 +116,13 @@ def buttonClicked(buttonName):
     elif buttonName == "merge":
         can.mergeSortWrap()
     elif buttonName == "quick":
-        pass
-    elif buttonName == "radix":
-        can.radixSort()
+        can.quickSortWrap()
+    elif buttonName == "reverse":
+        can.reverse()
+    elif buttonName == "new":
+        can.makeNewVals(barScale.get())
+    elif buttonName == "quit":
+        root.destroy()
     
     # update comparison display
     compsDisplay.config(text=can.comps)

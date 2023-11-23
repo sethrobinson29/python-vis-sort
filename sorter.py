@@ -1,3 +1,6 @@
+# Class for animating sorting algorithms using the Bar objects defined in graphics.py
+# By Seth Robinson https://github.com/sethrobinson29 
+# radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
 from graphics import *
 
 # swap function
@@ -6,6 +9,7 @@ def swapVals(arr, i, j):
     arr[j] = arr[i]
     arr[i] = tmp
 
+# class for array, canvas, and sorting 
 class Sorter():
     def __init__(self, root, arr=[]):
         self.root = root
@@ -28,11 +32,13 @@ class Sorter():
     def drawNums(self):
         self.canvas.delete('all')
         x, y, = 10, 500
-        
+        color = 0
+
         for i in range(self.numBars):
             y -= self.vals[i]
             tmp = Bar(self.vals[i], 575-y, 1)
             tmp.drawBar(self.canvas, Point(x, y))
+
             x += (1000 / self.numBars)
             y = 500
         self.root.update_idletasks()
@@ -48,11 +54,11 @@ class Sorter():
 
     # recursively bubble sort array; stop used to not iterated over previously sorted array. 
     def bubbleSort(self):
-        self.comps = 0                                                                       # comparisons
+        self.comps = 0                                                                       
         stop = self.numBars
         for i in range(stop-1):
             for j in range(stop-i-1):
-                self.comps += 1                                                              # comparisons
+                self.comps += 1                                                              
                 if self.vals[j] > self.vals[j+1]:
                     self.drawNums()
                     swapVals(self.vals, j, j+1)
@@ -65,7 +71,7 @@ class Sorter():
         self.comps = 0
         for i in range(stop-1):
             for j in range(i+1, stop):
-                self.comps += 1                                                              # comparisons
+                self.comps += 1                                                           
                 if self.vals[i] > self.vals[j]:
                     swapVals(self.vals, i, j)
                     self.drawNums()
@@ -86,11 +92,11 @@ class Sorter():
                 tmp.append(self.vals[x])
                 x += 1
             elif self.vals[x] < self.vals[y]:
-                self.comps += 1                                                              # comparisons
+                self.comps += 1                                                           
                 tmp.append(self.vals[x])
                 x += 1
             else:
-                self.comps += 1                                                              # comparisons
+                self.comps += 1                                                        
                 tmp.append(self.vals[y])
                 y += 1
         
@@ -98,6 +104,7 @@ class Sorter():
             self.vals[begin] = tmp[i]
             begin += 1
 
+    # recursive mergesort 
     def mergeSort(self, begin, end):
         if begin < end:
             mid = (begin + end) // 2
@@ -108,11 +115,42 @@ class Sorter():
             self.drawNums()
         self.drawNums() 
 
-    # wrapper function to print to console when mergeSort is finished
+    # wrapper function to handle mergesort
     def mergeSortWrap(self):
         self.comps = 0
         begin, end = 0, self.numBars-1
         self.mergeSort(begin, end)
+
+    # partition array for quicksort
+    def partition(self, left, right):
+        pivot = self.vals[right]
+        i = left-1
+
+        for j in range(left, right):
+            self.comps += 1
+            if self.vals[j] <= pivot:
+                i += 1
+                swapVals(self.vals, i, j)
+                self.drawNums()
+        swapVals(self.vals, i+1, right)
+        self.drawNums()
+        
+        return i+1
+
+    # recursive quicksort
+    def quicksort(self, begin, end):
+        if begin < end:
+            pivot = self.partition(begin, end)
+            self.quicksort(begin, pivot-1)
+            self.quicksort(pivot+1, end)
+
+    # wrapper function to handle quicksort
+    def quickSortWrap(self):
+        self.comps = 0
+        left, right = 0, self.numBars-1
+        self.quicksort(left, right)
+        self.drawNums()
+        # print(self.vals)
 
     # radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
     def countingSort(self, exp1):
@@ -149,8 +187,9 @@ class Sorter():
         for i in range(0, n):
             self.vals[i] = output[i]
 
-
+    # radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
     def radixSort(self):
+        self.comps = 0
         # Find the maximum number to know number of digits
         max1 = max(self.vals)
     
