@@ -1,8 +1,8 @@
+# GUI for Sorter object as defined in sorter.py
+# By Seth Robinson https://github.com/sethrobinson29 
 from sorter import *
 from math import *
 
-vals, sortedVals = [], []
-end =  numBars = comps = -1
 root = Tk()
 root.config(background="#297373")
 root.geometry("1100x800")
@@ -44,9 +44,11 @@ lowFrameSpace1.grid(row=0, column=3)
 bFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
 bFrame.grid(row=0, column=2)
 
-# sorting buttons
+# frame for sorting buttons
 sortFrame = Frame(bFrame, pady=5, background="#000034")
 sortFrame.grid(row=0)
+
+# sorting buttons
 bubble = Button(sortFrame, bg="#be97c6", text="Bubble", command=lambda:(buttonClicked("bubble")), font="Helvetica 12")
 bubble.grid(row=0, column=0, padx=5)
 selection = Button(sortFrame, bg="#be97c6", text="Selection", command=lambda:(buttonClicked("selection")) , font="Helvetica 12")
@@ -58,22 +60,23 @@ quickButton.grid(row=0, column=3, padx=5)
 radix = Button(sortFrame,bg="#be97c6", text="Radix", command=lambda: (buttonClicked("radix")) , font="Helvetica 12")
 radix.grid(row=0, column=4, padx=5)
 
+# frame for utility buttons
+utilFrame = Frame(bFrame, pady=5, background="#000034")
+utilFrame.grid(row=1)
+
 # utility buttons
-midFrame = Frame(bFrame, pady=5, background="#000034")
-midFrame.grid(row=1)
-backwards = Button(midFrame, bg="#be97c6", text="Reverse", command=lambda: (buttonClicked("reverse")), font="Helvetica 12")
+backwards = Button(utilFrame, bg="#be97c6", text="Reverse", command=lambda: (buttonClicked("reverse")), font="Helvetica 12")
 backwards.grid(row=0, column=1, padx=5)
-# p = Button(midFrame, bg="#be97c6", text="print", command=lambda: (print(vals)))
+# p = Button(midFrame, bg="#be97c6", text="print", command=lambda: (print(vals)))               # print sorter.vals to console
 # p.grid(row=0, column=1, padx=5)
-genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(buttonClicked("new")), font="Helvetica 12")
-# genNums = Button(midFrame, bg="#be97c6", text="Create New Array", command=lambda:(can.makeNewVals(int(arraySize.get()))), font="Helvetica 12")
+genNums = Button(utilFrame, bg="#be97c6", text="Create New Array", command=lambda:(buttonClicked("new")), font="Helvetica 12")
 genNums.grid(row=0, column=0, padx=5)
-closeProgram = Button(midFrame, bg="#be97c6", fg="#f31227", text="Quit", command=lambda: (buttonClicked("quit")), font="Helvetica 12 bold")
+closeProgram = Button(utilFrame, bg="#be97c6", fg="#f31227", text="Quit", command=lambda: (buttonClicked("quit")), font="Helvetica 12 bold")
 closeProgram.grid(row=0,  column=2, padx=5)
 
-# change length of array based on slider
+# change length of array based on scale
 def scaleChange(event):
-    if numBars != barScale.get():
+    if can.numBars != barScale.get():
         tmp = barScale.get()
         barScaleDisplay.config(text=tmp)
         can.makeNewVals(tmp)
@@ -83,14 +86,10 @@ def scaleChange(event):
 scaleFrame = Frame(lowFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20)
 scaleFrame.grid(row=0, column=4)
 
-# scale
+# scale for setting length of array to be sorted
 barScale = Scale(scaleFrame,from_=100, to=500, orient=HORIZONTAL, resolution=5, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, troughcolor="#be97c6", activebackground="#2e294e", font="Helvetica 10")
 barScale.bind("<ButtonRelease-1>", scaleChange)
 barScale.grid(row=2, columnspan=2)
-
-# spinbox
-# arraySize = Spinbox(scaleFrame, from_=50, to=500, bg="#000034", fg="#be97c6", highlightbackground="#2e294e", highlightthickness=4, activebackground="#2e294e", font="Helvetica 10", command=scaleChange)
-# arraySize.grid(row=2, columnspan=2)
 
 # scale label and display 
 barLabelFrame = Frame(scaleFrame, background="#000034", highlightbackground="#2e294e", highlightthickness=4, relief="ridge", pady=5, padx=20) 
@@ -102,7 +101,7 @@ barScaleDisplay.grid(row=0, column=1)
 scaleFrameSpace1 = Label(scaleFrame, background="#000034",  text=" ")
 scaleFrameSpace1.grid(row=1, columnspan=2)
 
-# initialize number of bars and array
+# initialize sorting 
 can.makeNewVals(barScale.get())
 
 # wrapper for button handling

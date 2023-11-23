@@ -19,7 +19,7 @@ class Sorter():
         self.root = root
         self.canvas = Canvas(root, height=550, width=1015,highlightbackground="#2e294e", highlightthickness=2, background="#000034")
         self.vals = arr
-        self.sortedVals = sorted(arr)
+        self.sortedVals = self.vals
         self.numBars = len(arr)
         self.comps = 0
 
@@ -32,11 +32,10 @@ class Sorter():
         self.canvascomps = 0
         self.drawNums()
 
-    # draw 
+    # draw self.vals
     def drawNums(self):
         self.canvas.delete('all')
         x, y, = 10, 550
-        colorIndex = 0
 
         for i in range(self.numBars):
             color = (self.vals[i] % 100) // 10 if self.vals[i] > 9 else 0
@@ -156,7 +155,6 @@ class Sorter():
         left, right = 0, self.numBars-1
         self.quicksort(left, right)
         self.drawNums()
-        # print(self.vals)
 
     # radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
     def countingSort(self, exp1):
