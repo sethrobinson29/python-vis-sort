@@ -11,7 +11,9 @@ def swapVals(arr, i, j):
     arr[i] = tmp
 
 # colors for drawing values
-colors = [ "#A18DCE", "#AA8ED2", "#B38ED6", "#BD8FD9", "#C68FDD", "#CF90E1", "#D890E5", "#E291E8", "#EB91EC", "#F492F0" ]
+# colors = [ "#A18DCE", "#AA8ED2", "#B38ED6", "#BD8FD9", "#C68FDD", "#CF90E1", "#D890E5", "#E291E8", "#EB91EC", "#F492F0" ]
+colors = [ "#A8F368", "#B1D867", "#BABE66", "#C3A365", "#CC8864", "#D56E62", "#DE5361", "#E73860", "#F01E5F", "#F9035E" ]
+colors.reverse()
 
 # class for array, canvas, and sorting 
 class Sorter():
@@ -35,17 +37,15 @@ class Sorter():
     # draw self.vals
     def drawNums(self):
         self.canvas.delete('all')
-        x, y, = 10, 550
+        x, y, = 10, 0
 
         for i in range(self.numBars):
-            color = (self.vals[i] % 100) // 10 if self.vals[i] > 9 else 0
-            y -= self.vals[i]
-            self.canvas.create_line(x, y, x, 550, fill=colors[color], width=1)
-            # tmp = Bar(self.vals[i], 575-y, 1)
-            # tmp.drawBar(self.canvas, Point(x, y))
+            color = (self.vals[i] % 100) // 10 if self.vals[i] > 9 else 0           # repeat gradient every 100 
+            y = self.vals[i]
+            self.canvas.create_line(x, 550, x, 550-y, fill=colors[color], width=1)
 
             x += (1000 / self.numBars)
-            y = 550
+            # y = 550
         self.root.update_idletasks()
     
     # reverses array
