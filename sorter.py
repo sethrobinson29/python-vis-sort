@@ -156,6 +156,53 @@ class Sorter():
         self.quicksort(left, right)
         self.drawNums()
 
+    # based on example found at https://www.cs.uah.edu/~rcoleman/CS221/Sorting/ProxMapSort.html
+    def proxMapSort(self, data1: dict, count: int) -> None:
+        result = {}
+        hits, proxMap, location = [], [], []
+        hIndex, curTotal = 0, 0
+        keyMin, keyMax = 0, 32767
+
+        # initializing
+        for i in range(count):
+            hits[i] = 0
+            proxMap[i] = -1
+            result[i].key = -1
+
+        # find mix and max
+        for i in range(count):
+            if data1[i].key > keyMax:
+                keyMax = data1[i].key
+            if data1[i].key < keyMin:
+                keyMin = data1[i].key
+
+        # compute hits; hits = number of collisions + 1
+        for i in range(count):
+            hIndex = self.calculateHash(data1[i].key, keyMin, keyMax, count)
+            location[i] = hIndex
+            hits[hIndex] += 1
+
+        # create proximity map
+        for i in range(count):
+            if hits[i] > 0:
+                proxMap[i] = curTotal
+                curTotal += hits[i]
+
+
+        for i in range(count):
+            if result[proxMap[location[i]]].key == -1:
+                result[proxMap[location[i]]] = data1[i]
+            else:
+                self.mapInsertionSort()
+
+    def calculateHash(self, key: int, keyMin: int, keyMax: int, count: int) -> int:
+        # todo: implement
+        pass
+
+    def mapInsertionSort(self):
+        #todo: translate example into correct function signature
+        pass
+
     # radix and counting sort code originally from https://www.geeksforgeeks.org/radix-sort/
     def countingSort(self, exp1):
         n = self.numBars
